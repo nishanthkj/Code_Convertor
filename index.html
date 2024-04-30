@@ -14,13 +14,17 @@
   <script>
     async function convertCode() {
       const codeInput = document.getElementById('codeInput').value;
+      const defaultPrompt = "Convert Delphi to Python"; // Define your default prompt text here
+
+      // Combine default prompt with code input
+      const fullCodeInput = defaultPrompt + '\n' + codeInput;
 
       const response = await fetch('http://localhost:3000/convert-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ code: codeInput })
+        body: JSON.stringify({ code: fullCodeInput })
       });
 
       const data = await response.text();
