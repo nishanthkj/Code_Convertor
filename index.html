@@ -4,20 +4,212 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Code Converter</title>
+  <style>
+
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 100%;
+  height: 400px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  overflow: hidden;
+}
+
+select {
+      width: 100%; /* Set width to 100% */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    select + select {
+      margin-top: 10px; /* Add margin between the select elements */
+    }
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+#codeInput, #convertedCode {
+      flex: 1; /* Equal width for both elements */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+      resize: vertical;
+    }
+    .button-container button {
+      margin: 0 5px;
+    }
+
+    #convertedCode {
+      flex: 1;
+      /* margin-top: 10px;  */
+      /* Add some space between the button and the result */
+      width: 100%;
+      /* padding: 10px; */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      /* margin-top: 10px; */
+      /* padding: 10px; */
+      margin-left: 10px;
+      height: 400px;
+      overflow: auto;
+    }
+    .container {
+      display: flex;
+      flex-direction: row; /* Display flex items in a row */
+      align-items: center; /* Center flex items vertically */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin:0 100px 0 100px;
+      height:400px;
+      width: auto;
+      
+    }
+    .option {
+      display: flex;
+      justify-content: center; /* Align children in the center horizontally */
+      align-items: center; /* Align children in the center vertically */
+    }
+
+    .option select {
+      width: 150px; /* Adjust width as needed */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    .option > div {
+      display: flex;
+    }
+
+    .option > div > select {
+      margin-right: 10px; /* Add some space between the selects */
+    }
+
+    select, button {
+      margin: 10px 0;
+      padding: 10px;
+    }
+    @media (max-width: 600px) {
+      .container {
+        flex-direction: column; /* Stack elements vertically on small screens */
+      }
+      .option {
+      display: flex;
+      flex-direction: row; /* Stack elements vertically */
+      align-items: center; /* Center items horizontally */
+    }
+
+    .option select {
+      width: 150px; /* Adjust width as needed */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+      margin-bottom: 10px; /* Add margin between the selects */
+    }
+
+    .option > div {
+      display: flex;
+    }
+
+    .option > div > select {
+      margin-right: 10px; /* Add some space between the selects */
+      display: block;
+    }
+
+      .button-container button {
+      margin: 0 5px;
+    }
+      #convertedCode {
+        margin-left: 0; /* Reset margin for smaller screens */
+        margin-top: 10px; /* Add margin-top for spacing */
+        flex:none;
+        height: 200px;
+      }}
+
+      .button-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .languageSelect1 .languageSelect2{
+      width: 100px;
+    }
+  </style>
 </head>
 <body>
   <h1>Code Converter</h1>
+  
+<div class="container">
   <textarea id="codeInput" placeholder="Enter your code here"></textarea>
-  <button onclick="convertCode()">Convert Code</button>
+  
+  
   <div id="convertedCode"></div>
-
+</div>
+<div class="option">
+  <div>
+    <select id="languageSelect1">
+      <option value="delphi">Delphi</option>
+      <option value="cobol">COBOL</option>
+      <option value="vb">Visual Basic</option>
+    </select>
+    
+    <select id="languageSelect2">
+      <option value="csharp">C#</option>
+      <option value="java">Java</option>
+      <option value="python">Python</option>
+    </select>
+  </div></div>
+  <div class="button-container">
+    <button onclick="convertCode()" style="width: 100px; height: 50px;">Convert Code</button>
+    <button id="copyButton" style="width: 100px; height: 50px;">Copy</button>
+  </div>
+  
+  
   <script>
     async function convertCode() {
       const codeInput = document.getElementById('codeInput').value;
-      const defaultPrompt = "Convert Delphi to Python"; // Define your default prompt text here
+      const selectedLanguage1 = document.getElementById('languageSelect1').value;
+      const selectedLanguage2 = document.getElementById('languageSelect2').value;
+      const defaultPrompt = "Your default prompt text here."; // Define your default prompt text here
 
+      // Store selected languages in variables
+      const language1 = selectedLanguage1;
+      const language2 = selectedLanguage2;
       // Combine default prompt with code input
-      const fullCodeInput = defaultPrompt + '\n' + codeInput;
+      const fullCodeInput = " Convert the  "+ selectedLanguage1 + " to " + selectedLanguage2 + '\n' + codeInput + '\n';
+
+      
 
       const response = await fetch('http://localhost:3000/convert-code', {
         method: 'POST',
