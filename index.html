@@ -58,6 +58,7 @@ button {
       border-radius: 4px;
       box-sizing: border-box;
       font-size: 16px;
+      resize: none;
       
     }
     .button-container button {
@@ -89,6 +90,7 @@ button {
       margin:0 100px 0 100px;
       height:400px;
       width: auto;
+      margin: 30px;
       
     }
     .option {
@@ -169,6 +171,7 @@ button {
       display:flex;
       justify-content: center;
       flex-direction: column;
+      resize: none !important;
       
     }
     input[type="file"] {
@@ -192,7 +195,7 @@ button {
   height: 300px;
   position: relative;
   resize: none;
-  overflow: scroll;
+  /* overflow: scroll; */
  }
  
  .container{
@@ -229,7 +232,8 @@ button {
     <button onclick="twofunction()" style="width: 100px; height: 50px;">Convert Code</button>
     <button onclick="downloadConvertedCode()" sid="copyButton" style="width: 100px; height: 50px;">Download</button>
   </div>
-  <div><center>  <input type="file">
+  <div><center> 
+    <div></div>
   </center></div>
 
 
@@ -240,6 +244,46 @@ button {
     <div id="codeLogic" placeholder="" cols="100"></div>
     <button onclick="downloadLogic()" style="width: 100px; height: 50px;">Download Logic</button>
   </div></center>
+  </div>
+  
+
+  <div class="container">
+    <h1>For Large File</h1>
+    <input type="file" id="upload">
+    <button id="convertButton" onclick="printOutput()">Convert to String</button>
+    <p id="outputbx"></p>
+  </div>
+  
+  <script>
+    let fileContent = ""; // Variable to store file content
+
+function printOutput() {
+  let outputbx = document.getElementById('outputbx');
+  fileContent = outputbx.innerText; // Store the contents in the variable
+  console.log(fileContent); // Print the contents of outputbx
+}
+
+let upload = document.getElementById('upload');
+
+upload.addEventListener('change', () => {
+  let fr = new FileReader();
+  fr.readAsText(upload.files[0]);
+  fr.onload = function () {
+    let outputbx = document.getElementById('outputbx');
+    outputbx.innerHTML = fr.result;
+    printOutput(); // Call the function to print and store the contents
+
+    // Accessing file content as string here
+    var fileContentAsString = fr.result;
+    console.log("File content as string:", fileContentAsString);
+    run(fileContentAsString);
+  };
+});
+
+  </script>
+  
+  
+
   </div>
   
 
@@ -330,6 +374,80 @@ button {
     // Revoke the temporary URL to free up resources
     URL.revokeObjectURL(url);
   }
+ 
+  
+
+
+async function run(fileContentAsString) {
+  
+// Large code paragraph
+var largeCodeParagraph = fileContentAsString;
+// Small code snippet
+
+// Splitting the large code paragraph into smaller parts based on ';'
+var delimiters = /;|\[|\]|\{|\}/; // Regular expression to match delimiters
+var smallCodeParagraphs = largeCodeParagraph.split(delimiters)
+    .map(part => part.trim())
+    .filter(part => part !== '');
+console.log("Small Code Paragraphs: ",smallCodePargrams);
+
+// Storing the smaller code paragraphs in a formatted array variable
+var codeArray = [];
+for (var i = 0; i < smallCodeParagraphs.length; i++) {
+    codeArray.push(`Part ${i + 1}: ${smallCodeParagraphs[i]};`);
+}
+
+// Now, codeArray contains smaller code paragraphs in a formatted array variable
+console.log(codeArray);
+
+
+
+// Large code paragraph
+var largeCodeParagraph = fileContentAsString;
+
+// Splitting the large code paragraph into smaller parts based on ';'
+var smallCodeParagraphs = largeCodeParagraph.split(';').map(part => part.trim()).filter(part => part !== '');
+
+// Storing the smaller code paragraphs in a formatted array variable
+var codeArray = [];
+for (var i = 0; i < smallCodeParagraphs.length; i++) {
+    codeArray.push(`Part ${i + 1}: ${smallCodeParagraphs[i]};`);
+}
+
+// Now, codeArray contains smaller code paragraphs in a formatted array variable
+console.log(codeArray);
+for (let i = 0; i < codeArray.length; i++) {
+    var poppedElement = codeArray[i];
+    
+    const codeInput = poppedElement;
+    const selectedLanguage1 = document.getElementById('languageSelect1').value;
+    const selectedLanguage2 = document.getElementById('languageSelect2').value;
+    const defaultPrompt = "Your default prompt text here."; // Define your default prompt text here
+
+    // Store selected languages in variables
+    const language1 = selectedLanguage1;
+    const language2 = selectedLanguage2;
+    // Combine default prompt with code input
+    const fullCodeInput = " Convert the  "+ selectedLanguage1 + " to " + selectedLanguage2 + '\n' + codeInput + '\n';
+
+    const response = await fetch('http://localhost:3000/convert-code', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ code: fullCodeInput })
+    });
+
+    const data = await response.text();
+    // Append the converted code to the existing data
+    var data1 = data1 + data;
+    document.getElementById('convertedCode').innerText = data1;
+  }
+    }
+
+
+  
   </script>
+  
 </body>
 </html>
