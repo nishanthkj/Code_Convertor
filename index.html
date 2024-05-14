@@ -58,7 +58,7 @@ button {
       border-radius: 4px;
       box-sizing: border-box;
       font-size: 16px;
-      resize: vertical;
+      
     }
     .button-container button {
       margin: 0 5px;
@@ -165,14 +165,51 @@ button {
     .languageSelect1 .languageSelect2{
       width: 100px;
     }
+    #codeinput{
+      display:flex;
+      justify-content: center;
+      flex-direction: column;
+      
+    }
+    input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px; /* Add some margin between the textarea and file input */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  align-content: center;
+  align-items: center;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  border: none;
+}
+textarea{
+  
+}
+#codeLogic{
+  height: 300px;
+  position: relative;
+  resize: none;
+  overflow: scroll;
+  
+
+}.container{
+  display: flex;
+  justify-content: center;
+}
   </style>
 </head>
 <body>
   <h1>Code Converter</h1>
   
 <div class="container">
-  <textarea id="codeInput" placeholder="Enter your code here"></textarea>
   
+  <textarea id="codeInput" placeholder="Enter your code here"></textarea>
+
   
   <div id="convertedCode"></div>
 </div>
@@ -192,9 +229,22 @@ button {
   </div></div>
   <div class="button-container">
     <button onclick="convertCode()" style="width: 100px; height: 50px;">Convert Code</button>
-    <button id="copyButton" style="width: 100px; height: 50px;">Copy</button>
+    <button onclick="downloadConvertedCode()" sid="copyButton" style="width: 100px; height: 50px;">Download</button>
+  </div>
+  <div><center>  <input type="file">
+  </center></div>
+
+
+  <div class="container">
+    <center>
+   <div>
+    <div>Logic of the Code
+    <textarea id="codeLogic" placeholder="Enter your logic here"></textarea>
+    <button onclick="downloadLogic()" style="width: 100px; height: 50px;">Download Logic</button>
+  </div></center>
   </div>
   
+
   
   <script>
     async function convertCode() {
@@ -222,6 +272,41 @@ button {
       const data = await response.text();
       document.getElementById('convertedCode').innerText = data;
     }
+
+
+
+
+    function downloadConvertedCode() {
+    // Get the converted code content
+    const convertedCode = document.getElementById('convertedCode').innerText;
+    
+    // Create a blob with the content
+    const blob = new Blob([convertedCode], { type: 'text/plain' });
+    
+    // Create a temporary URL for the blob
+    const url = URL.createObjectURL(blob);
+    
+    // Create a link element
+    const a = document.createElement('a');
+    
+    // Set the link's href to the temporary URL
+    a.href = url;
+    
+    // Set the link's download attribute with a file name
+    a.download = 'converted_code.txt';
+    
+    // Append the link to the body
+    document.body.appendChild(a);
+    
+    // Simulate a click on the link to trigger the download
+    a.click();
+    
+    // Remove the link from the body
+    document.body.removeChild(a);
+    
+    // Revoke the temporary URL to free up resources
+    URL.revokeObjectURL(url);
+  }
   </script>
 </body>
 </html>
