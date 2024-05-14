@@ -1,25 +1,43 @@
-const express = require('express');
+// Import necessary modules
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const dotenv = require("dotenv");
+const readline = require("readline");
+
+// Load environment variables from .env file
 dotenv.config();
 
-const app = express();
+// Initialize GoogleGenerativeAI with API key from environment variables
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
-app.use(express.json());
+// Create a readline interface for user input/output
+const userInterface = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
-app.post('/convert', async (req, res) => {
-    const codeToConvert = req.body.code;
-    
+// Define an asynchronous function to handle the main logic
+async function run() {
+  // Prompt the user to enter a code snippet
+  userInterface.question("Enter Code to be Converted ", async (prompt) => {
+    // For text-only input, use the gemini-pro model
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const result = await model.generateContent(codeToConvert);
+
+    // Generate content based on the user's input
+    const result = await model.generateContent(prompt);
+
+    // Extract the response from the generation result
     const response = await result.response;
-    const convertedCode = response.text();
 
-    res.json({ convertedCode });
-});
+    // Extract the text content from the response
+    const text = response.text();
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+    // Log the generated code snippet to the console
+    console.log(text);
+
+    // Close the readline interface when done
+    userInterface.close();
+  });
+}
+
+// Run the main function
+run();
