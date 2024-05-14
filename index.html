@@ -187,17 +187,15 @@ button {
   padding: 30px;
   border: none;
 }
-textarea{
-  
-}
+
 #codeLogic{
   height: 300px;
   position: relative;
   resize: none;
   overflow: scroll;
-  
-
-}.container{
+ }
+ 
+ .container{
   display: flex;
   justify-content: center;
 }
@@ -228,7 +226,7 @@ textarea{
     </select>
   </div></div>
   <div class="button-container">
-    <button onclick="convertCode()" style="width: 100px; height: 50px;">Convert Code</button>
+    <button onclick="twofunction()" style="width: 100px; height: 50px;">Convert Code</button>
     <button onclick="downloadConvertedCode()" sid="copyButton" style="width: 100px; height: 50px;">Download</button>
   </div>
   <div><center>  <input type="file">
@@ -239,7 +237,7 @@ textarea{
     <center>
    <div>
     <div>Logic of the Code
-    <textarea id="codeLogic" placeholder="Enter your logic here"></textarea>
+    <div id="codeLogic" placeholder="" cols="100"></div>
     <button onclick="downloadLogic()" style="width: 100px; height: 50px;">Download Logic</button>
   </div></center>
   </div>
@@ -247,6 +245,11 @@ textarea{
 
   
   <script>
+
+    function twofunction () {
+      convertCode();
+      convertLogic(); 
+    }
     async function convertCode() {
       const codeInput = document.getElementById('codeInput').value;
       const selectedLanguage1 = document.getElementById('languageSelect1').value;
@@ -273,6 +276,26 @@ textarea{
       document.getElementById('convertedCode').innerText = data;
     }
 
+    async function convertLogic() {
+      const codeInput = document.getElementById('codeInput').value;
+      const defaultPrompt = "Your default prompt text here."; // Define your default prompt text here
+
+      // Combine default prompt with code input
+      const fullCodeInput = " Write the Logic of the code  " + codeInput + '\n';
+
+      
+
+      const response = await fetch('http://localhost:3000/convert-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code: fullCodeInput })
+      });
+
+      const data = await response.text();
+      document.getElementById('codeLogic').innerText = data;
+    }
 
 
 
