@@ -195,7 +195,7 @@ button {
   height: 300px;
   position: relative;
   resize: none;
-  /* overflow: scroll; */
+  overflow: scroll;
  }
  
  .container{
@@ -428,7 +428,7 @@ for (let i = 0; i < codeArray.length; i++) {
     const language1 = selectedLanguage1;
     const language2 = selectedLanguage2;
     // Combine default prompt with code input
-    const fullCodeInput = " Convert the  "+ selectedLanguage1 + " to " + selectedLanguage2 + '\n' + codeInput + '\n';
+    const fullCodeInput = " Convert the  "+ selectedLanguage1 + " to " + selectedLanguage2 + '\n' +  codeInput + "Comment undefinedPart 1: in the code               "+'\n';
 
     const response = await fetch('http://localhost:3000/convert-code', {
       method: 'POST',
